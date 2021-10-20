@@ -8,11 +8,11 @@
       version: "master"
       depth: 1
       update: yes
+    register: bashit_clone
 
   - name: Install bash-it
-    command:
-      cmd: "bash $HOME/.bash_it/install.sh --silent -f"
-      executable: /bin/bash
+    command: "bash $HOME/.bash_it/install.sh --silent -f"
+    when: bashit_clone.changed
 
   - name: Deploy custom theme
     copy:
