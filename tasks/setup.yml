@@ -1,0 +1,55 @@
+---
+- name: Bash_it config deploy block
+  block:
+  - name: Clone bash_it repo
+    git:
+      repo: 'https://github.com/Bash-it/bash-it.git'
+      dest: "$HOME/.bash_it"
+      version: "master"
+      depth: 1
+      update: yes
+
+  - name: Install bash-it
+    command:
+      cmd: "bash $HOME/.bash_it/install.sh --silent -f"
+      executable: /bin/bash
+
+  - name: Deploy custom theme
+    copy:
+      src: "2xtreme"
+      dest: $HOME/.bash_it/themes/
+      mode: '0750'
+
+  - name: Deploy .bash_personal
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: '0640'
+    loop:
+      - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
+      - { src: 'bash_profile.j2', dest: '$HOME/.bash_profile'}
+
+  - name: Fix bash_it theme
+    lineinfile:
+      path: $HOME/.bashrc
+      regexp: '^export BASH_IT_THEME='
+      line: export BASH_IT_THEME='2xtreme'
+
+  - name: Fix bash_it sudo prompt
+    blockinfile:
+      path: $HOME/.bashrc
+      insertafter: EOF
+      block: |
+
+        # Make sure only root user gets Red background prompt
+        export THEME_CHECK_SUDO=false
+
+        # (Advanced): Uncomment this to make Bash-it reload itself automatically
+        # after enabling or disabling aliases, plugins, and completions.
+        export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
+
+        # Uncomment this to make Bash-it create alias reload.
+        export BASH_IT_RELOAD_LEGACY=1
+    when: outer_item != 'root'
+  become_user: "{{ outer_item }}"
+  when: outer_item is defined

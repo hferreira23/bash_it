@@ -1,0 +1,70 @@
+{% if ansible_facts['distribution'] != "MacOSX" %}
+#Path PIP
+export PATH=$PATH:~/.local/bin
+
+#fuzzy finder settings
+source /usr/share/fzf/key-bindings.bash
+source /usr/share/fzf/completion.bash
+  {% if ssh_agent %}
+# SSH Agent
+SSH_ENV="$HOME/.ssh/environment"
+
+#SSH Agent function
+function start_agent {
+    echo "Initialising new SSH agent..."
+    /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
+    echo succeeded
+    chmod 600 "${SSH_ENV}"
+    . "${SSH_ENV}" > /dev/null
+    /usr/bin/ssh-add;
+}
+
+# Source SSH settings, if applicable
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" > /dev/null
+    #ps ${SSH_AGENT_PID} doesn't work under cywgin
+    ps -ef | grep ${SSH_AGENT_PID} | grep ssh-agent$ > /dev/null || {
+        start_agent;
+    }
+else
+    start_agent;
+fi
+  {% endif %}
+
+  {% if ansible_ara and outer_item != 'root'  %}
+# Configure Ansible to use the ARA callback plugin
+export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"
+export ANSIBLE_LOOKUP_PLUGINS=$(python3 -m ara.setup.lookup_plugins)
+export ANSIBLE_ACTION_PLUGINS=$(python3 -m ara.setup.action_plugins)
+
+# Set up the ARA callback to know where the API server is located
+export ARA_API_CLIENT="http"
+export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
+  {% endif %}
+{% endif %}
+{% if ansible_facts['distribution'] == "MacOSX" %}
+# PIP PATH
+export PATH=$PATH:/Users/ferreirah/Library/Python/3.9/bin
+
+# iTerm2 shell integration
+test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true
+
+# Bash completion
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+
+#Pritunl ssh sockets
+function ssh-sockets {
+  ssh -D 10000 -C -N -f wv-devcfd01-prdwv.prd.fndlsb.net
+  ssh -J wv-devcfd01-prdwv.prd.fndlsb.net -D 10001 -C -N -f njss1-devfd01-nxt.dev.fndlsb.net
+}
+
+export VISUAL=/usr/local/bin/vim
+
+complete -C /usr/local/bin/terraform terraform
+
+#Fuzzy finder activation
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+#docker buildx support
+export DOCKER_CLI_EXPERIMENTAL=enabled
+{% endif %}

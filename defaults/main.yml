@@ -1,0 +1,7 @@
+---
+bash_it_users:
+  - 2xtreme
+  - root
+
+ansible_ara: false
+ssh_agent: false

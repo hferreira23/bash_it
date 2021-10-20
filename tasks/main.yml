@@ -1,0 +1,28 @@
+---
+- name: Install needed packages
+  package:
+    name:
+      - git
+      - fzf
+      - bash-completion
+    state: latest
+  when: ansible_distribution != "MacOSX"
+
+- name: Add fzf completion on Debian
+  file:
+    path: "{{ item.path | default(omit) }}"
+    src: "{{ item.src | default(omit) }}"
+    dest: "{{ item.dest | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+  loop:
+    - { path: '/usr/share/fzf', state: 'directory'}
+    - { src: '/usr/share/doc/fzf/examples/key-bindings.bash', dest: '/usr/share/fzf/key-bindings.bash', state: 'link'}
+    - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link'}
+  when: ansible_distribution == "Debian"
+
+- name: Include setup tasks
+  include_tasks:
+    file: setup.yml
+  loop: "{{ bash_it_users }}"
+  loop_control:
+    loop_var: outer_item
