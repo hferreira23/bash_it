@@ -14,10 +14,11 @@
     src: "{{ item.src | default(omit) }}"
     dest: "{{ item.dest | default(omit) }}"
     state: "{{ item.state | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
   loop:
-    - { path: '/usr/share/fzf', state: 'directory'}
-    - { src: '/usr/share/doc/fzf/examples/key-bindings.bash', dest: '/usr/share/fzf/key-bindings.bash', state: 'link'}
-    - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link'}
+    - { path: '/usr/share/fzf', state: 'directory', mode: 0755}
+    - { src: '/usr/share/doc/fzf/examples/key-bindings.bash', dest: '/usr/share/fzf/key-bindings.bash', state: 'link', mode: 0644}
+    - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link', mode: 0644}
   when: ansible_distribution == "Debian"
 
 - name: Include setup tasks
