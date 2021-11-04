@@ -27,10 +27,10 @@ galaxy_info:
   # To view available platforms and versions (or releases), visit:
   # https://galaxy.ansible.com/api/v1/platforms/
   #
-  # platforms:
-  # - name: Fedora
-  #   versions:
-  #   - all
+  platforms:
+  - name: Linux
+    versions:
+    - all
   #   - 25
   # - name: SomePlatform
   #   versions:
@@ -40,8 +40,6 @@ galaxy_info:
   #   - 99.99
 
   galaxy_tags:
-    - bash_it
-    - bash-it
     - bashit
     # List tags for your role here, one per line. A tag is a keyword that describes
     # and categorizes the role. Users find roles by searching for tags. Be sure to
