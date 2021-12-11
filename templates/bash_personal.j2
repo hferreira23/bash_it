@@ -5,7 +5,7 @@ export PATH=$PATH:~/.local/bin
 #fuzzy finder settings
 source /usr/share/fzf/key-bindings.bash
 source /usr/share/fzf/completion.bash
-  {% if ssh_agent %}
+{% if ssh_agent %}
 # SSH Agent
 SSH_ENV="$HOME/.ssh/environment"
 
@@ -29,9 +29,9 @@ if [ -f "${SSH_ENV}" ]; then
 else
     start_agent;
 fi
-  {% endif %}
+{% endif %}
 
-  {% if ansible_ara and outer_item != 'root'  %}
+{% if ansible_ara and outer_item != 'root'  %}
 # Configure Ansible to use the ARA callback plugin
 export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"
 export ANSIBLE_LOOKUP_PLUGINS=$(python3 -m ara.setup.lookup_plugins)
@@ -40,7 +40,7 @@ export ANSIBLE_ACTION_PLUGINS=$(python3 -m ara.setup.action_plugins)
 # Set up the ARA callback to know where the API server is located
 export ARA_API_CLIENT="http"
 export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
-  {% endif %}
+{% endif %}
 {% endif %}
 {% if ansible_facts['distribution'] == "MacOSX" %}
 # PIP PATH
