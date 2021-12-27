@@ -17,3 +17,8 @@ jobs:
           default_bump: "patch"
           release_branches: "master"
           tag_prefix: ""
+
+      - name: Release Ansible Role to Galaxy
+        uses: hspaans/ansible-galaxy-action@v0.3.6
+        with:
+          api_key: ${{ secrets.GALAXY_TOKEN }}
