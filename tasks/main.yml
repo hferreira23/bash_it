@@ -21,13 +21,6 @@
     - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link', mode: '0644' }
   when: ansible_distribution == "Debian"
 
-- name: Install Zoxide
-  shell:
-    cmd: curl -sS https://webinstall.dev/zoxide | bash
-  args:
-    executable: /bin/bash
-  when: ansible_distribution == "Debian"
-
 - name: Install theme.sh
   get_url:
     url: "https://git.io/JM70M"

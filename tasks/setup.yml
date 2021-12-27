@@ -20,6 +20,13 @@
       dest: $HOME/.bash_it/themes/
       mode: '0750'
 
+  - name: Install Zoxide
+    shell:
+      cmd: curl -sS https://webinstall.dev/zoxide | bash
+    args:
+      executable: /bin/bash
+    when: ansible_distribution == "Debian"
+
   - name: Deploy .bash_personal
     template:
       src: "{{ item.src }}"
@@ -54,14 +61,14 @@
     when: outer_item != 'root'
 
   - name: Enable bash-it completions
-    command:
-      cmd: "bashit enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+    shell:
+      cmd: "bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
     args:
       executable: /bin/bash
 
   - name: Enable bash-it plugins
-    command:
-      cmd: "bashit enable plugin alias-completion base docker fzf git man sudo thefuck"
+    shell:
+      cmd: "bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
     args:
       executable: /bin/bash
 
