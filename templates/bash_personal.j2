@@ -26,7 +26,7 @@ else
     start_agent;
 fi
 {% endif %}
-{% if ansible_ara and outer_item != 'root'  %}
+{% if ansible_ara and outer_item != 'root' %}
 # Configure Ansible to use the ARA callback plugin
 export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"
 export ANSIBLE_LOOKUP_PLUGINS=$(python3 -m ara.setup.lookup_plugins)
