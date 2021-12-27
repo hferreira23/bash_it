@@ -28,6 +28,7 @@
     loop:
       - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
       - { src: 'bash_profile.j2', dest: '$HOME/.bash_profile'}
+      - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
 
   - name: Fix bash_it theme
     lineinfile:
@@ -51,5 +52,18 @@
         # Uncomment this to make Bash-it create alias reload.
         export BASH_IT_RELOAD_LEGACY=1
     when: outer_item != 'root'
+
+  - name: Enable bash-it completions
+    command:
+      cmd: "bashit enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+    args:
+      executable: /bin/bash
+
+  - name: Enable bash-it plugins
+    command:
+      cmd: "bashit enable plugin alias-completion base docker fzf git man sudo thefuck"
+    args:
+      executable: /bin/bash
+
   become_user: "{{ outer_item }}"
   when: outer_item is defined

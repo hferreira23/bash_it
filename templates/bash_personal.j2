@@ -1,10 +1,6 @@
 {% if ansible_facts['distribution'] != "MacOSX" %}
 #Path PIP
 export PATH=$PATH:~/.local/bin
-
-#fuzzy finder settings
-source /usr/share/fzf/key-bindings.bash
-source /usr/share/fzf/completion.bash
 {% if ssh_agent %}
 # SSH Agent
 SSH_ENV="$HOME/.ssh/environment"
@@ -30,7 +26,6 @@ else
     start_agent;
 fi
 {% endif %}
-
 {% if ansible_ara and outer_item != 'root'  %}
 # Configure Ansible to use the ARA callback plugin
 export ANSIBLE_CALLBACK_PLUGINS="$(python3 -m ara.setup.callback_plugins)"
@@ -42,7 +37,17 @@ export ARA_API_CLIENT="http"
 export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
 {% endif %}
 {% endif %}
+# Set vim as the default editor
+export VISUAL=$(which vim)
+export EDITOR=$(which vim)
+
+# Zoxide
+eval "$(zoxide init --cmd cd bash)"
+
+# theme.sh
+eval "$(theme.sh gruvbox-original-dark-hard)"
 {% if ansible_facts['distribution'] == "MacOSX" %}
+# Mac OS settings
 # PIP PATH
 export PATH=$PATH:/Users/ferreirah/Library/Python/3.9/bin
 
@@ -78,14 +83,4 @@ function ssh-sockets {
                                                                                38353561313339346437393530633133633430393764303063393965393336616565333537386338
                                                                                6535303466623730643336383065653435393430653736343135
 }
-
-export VISUAL=/usr/local/bin/vim
-
-complete -C /usr/local/bin/terraform terraform
-
-#Fuzzy finder activation
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
-#docker buildx support
-export DOCKER_CLI_EXPERIMENTAL=enabled
 {% endif %}
