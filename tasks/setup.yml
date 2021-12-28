@@ -62,13 +62,13 @@
 
   - name: Enable bash-it completions
     shell:
-      cmd: "bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+      cmd: "source ~/.bash_it/bash_it.sh && bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
     args:
       executable: /bin/bash
 
   - name: Enable bash-it plugins
     shell:
-      cmd: "bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
+      cmd: "source ~/.bash_it/bash_it.sh && bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
     args:
       executable: /bin/bash
 
