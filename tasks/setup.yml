@@ -62,7 +62,7 @@
 
   - name: Enable bash-it completions
     shell:
-      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
     args:
       executable: /bin/bash
 
