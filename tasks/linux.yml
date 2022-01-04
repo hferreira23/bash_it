@@ -70,7 +70,7 @@
       path: "{{ item.0 }}"
       regexp: "{{ item.1.regexp }}"
       line: "{{ item.1.replace }}"
-    loop:
+    with_nested:
       - "{{ bashit_config_files }}"
       - "{{ bashit_settings }}"
 
@@ -79,13 +79,13 @@
       path: $HOME/.bashrc
       insertafter: EOF
       block: |
-
+        {% if outer_item != 'root' -%}
         # Make sure only root user gets Red background prompt
         export THEME_CHECK_SUDO=false
+        {% endif -%    when: outer_item != 'root'}
 
         #Import bash_personal
         [[ -f ~/.bash_personal ]] && . ~/.bash_personal
-    when: outer_item != 'root'
 
   - name: Enable bash-it completions
     shell:
