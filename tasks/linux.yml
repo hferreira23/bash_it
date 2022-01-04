@@ -1,0 +1,103 @@
+---
+- name: Install needed packages
+  package:
+    name:
+      - git
+      - fzf
+      - bash-completion
+    state: latest
+
+- name: Add fzf completion on Debian
+  file:
+    path: "{{ item.path | default(omit) }}"
+    src: "{{ item.src | default(omit) }}"
+    dest: "{{ item.dest | default(omit) }}"
+    state: "{{ item.state | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop:
+    - { path: '/usr/share/fzf', state: 'directory', mode: '0755' }
+    - { src: '/usr/share/doc/fzf/examples/key-bindings.bash', dest: '/usr/share/fzf/key-bindings.bash', state: 'link', mode: '0644' }
+    - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link', mode: '0644' }
+  when: ansible_distribution == "Debian" or ansible_distribution == "Pop!_OS"
+
+- name: Install theme.sh
+  get_url:
+    url: "https://git.io/JM70M"
+    dest: /usr/bin/theme.sh
+    mode: 0755
+    owner: 'root'
+    group: 'root'
+
+- name: Bash_it config deploy block
+  block:
+  - name: Clone bash_it repo
+    git:
+      repo: 'https://github.com/Bash-it/bash-it.git'
+      dest: "$HOME/.bash_it"
+      version: "master"
+      depth: 1
+      update: yes
+    register: bashit_clone
+
+  - name: Install bash-it
+    command: "bash $HOME/.bash_it/install.sh --silent -a -f"
+    when: bashit_clone.changed
+
+  - name: Deploy custom theme
+    copy:
+      src: "2xtreme"
+      dest: $HOME/.bash_it/themes/
+      mode: '0750'
+
+  - name: Install Zoxide
+    shell:
+      cmd: curl -sS https://webinstall.dev/zoxide | bash
+    args:
+      executable: /bin/bash
+
+  - name: Deploy dot files
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: '0640'
+    loop:
+      - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
+      - { src: 'bash_profile.j2', dest: '$HOME/.bash_profile'}
+      - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
+
+  - name: Custom bashit configs
+    lineinfile:
+      path: "{{ item.0 }}"
+      regexp: "{{ item.1.regexp }}"
+      line: "{{ item.1.replace }}"
+    loop:
+      - "{{ bashit_config_files }}"
+      - "{{ bashit_settings }}"
+
+  - name: Fix bash_it sudo prompt
+    blockinfile:
+      path: $HOME/.bashrc
+      insertafter: EOF
+      block: |
+
+        # Make sure only root user gets Red background prompt
+        export THEME_CHECK_SUDO=false
+
+        #Import bash_personal
+        [[ -f ~/.bash_personal ]] && . ~/.bash_personal
+    when: outer_item != 'root'
+
+  - name: Enable bash-it completions
+    shell:
+      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+    args:
+      executable: /bin/bash
+
+  - name: Enable bash-it plugins
+    shell:
+      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
+    args:
+      executable: /bin/bash
+
+  become_user: "{{ outer_item }}"
+  when: outer_item is defined

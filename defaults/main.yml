@@ -5,3 +5,15 @@ bash_it_users:
 
 ansible_ara: false
 ssh_agent: false
+
+bashit_settings:
+  - regexp: '# export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1'
+    replace: 'export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1'
+  - regexp: '# export BASH_IT_RELOAD_LEGACY=1'
+    replace: 'export BASH_IT_RELOAD_LEGACY=1'
+  - regexp: "^export BASH_IT_THEME=.*"
+    replace: "export BASH_IT_THEME='2xtreme'"
+
+bashit_config_files:
+  - "$HOME/.bashrc"
+  - "$HOME/.bash_profile"

@@ -1,0 +1,12 @@
+{# Only  gets imported in MacOS #}
+#Import bash_personal
+[[ -f ~/.bash_personal ]] && . ~/.bash_personal
+
+#Set alias for gnu tools
+alias ls="gls --color -liash"
+alias grep="ggrep --color"
+alias fgrep="gfgrep --color"
+alias egrep="gegrep --color"
+
+#Make powerline padding better
+export POWERLINE_PADDING=0

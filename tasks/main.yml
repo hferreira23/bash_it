@@ -1,38 +1,16 @@
 ---
-- name: Install needed packages
-  package:
-    name:
-      - git
-      - fzf
-      - bash-completion
-    state: latest
-  when: ansible_distribution != "MacOSX"
-
-- name: Add fzf completion on Debian
-  file:
-    path: "{{ item.path | default(omit) }}"
-    src: "{{ item.src | default(omit) }}"
-    dest: "{{ item.dest | default(omit) }}"
-    state: "{{ item.state | default(omit) }}"
-    mode: "{{ item.mode | default(omit) }}"
-  loop:
-    - { path: '/usr/share/fzf', state: 'directory', mode: '0755' }
-    - { src: '/usr/share/doc/fzf/examples/key-bindings.bash', dest: '/usr/share/fzf/key-bindings.bash', state: 'link', mode: '0644' }
-    - { src: '/usr/share/doc/fzf/examples/completion.bash', dest: '/usr/share/fzf/completion.bash', state: 'link', mode: '0644' }
-  when: ansible_distribution == "Debian" or ansible_distribution == "Pop!_OS"
-
-- name: Install theme.sh
-  get_url:
-    url: "https://git.io/JM70M"
-    dest: /usr/bin/theme.sh
-    mode: 0755
-    owner: 'root'
-    group: 'root'
+- name: Include setup tasks
+  include_tasks:
+    file: linux.yml
+  loop: "{{ bash_it_users }}"
+  loop_control:
+    loop_var: outer_item
   when: ansible_distribution != "MacOSX"
 
 - name: Include setup tasks
   include_tasks:
-    file: setup.yml
+    file: macos.yml
   loop: "{{ bash_it_users }}"
   loop_control:
     loop_var: outer_item
+  when: ansible_distribution == "MacOSX"
