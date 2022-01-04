@@ -69,7 +69,7 @@
     replace:
       path: "{{ item.0 }}"
       regexp: "{{ item.1.regexp }}"
-      line: "{{ item.1.replace }}"
+      replace: "{{ item.1.replace }}"
     with_nested:
       - "{{ bashit_config_files }}"
       - "{{ bashit_settings }}"
