@@ -37,6 +37,7 @@
       version: "master"
       depth: 1
       update: yes
+      force: yes
     register: bashit_clone
 
   - name: Install bash-it
