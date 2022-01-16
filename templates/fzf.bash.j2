@@ -1,7 +1,9 @@
 {% if ansible_facts['distribution'] != "MacOSX" %}
 ## Fuzzy finder settings
 source /usr/share/fzf/key-bindings.bash
+{% if ansible_facts['distribution'] != "Debian" %}
 source /usr/share/fzf/completion.bash 2> /dev/null
+{% endif %}
 {% endif %}
 {% if ansible_facts['distribution'] == "MacOSX" %}
 # Setup fzf
