@@ -6,6 +6,7 @@
       - fzf
       - bash-completion
     state: latest
+  when: outer_item == "root"
 
 - name: Add fzf keybindins
   file:
