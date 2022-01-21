@@ -53,13 +53,13 @@ HISTFILESIZE=10000
 # Ignore duplicated commands
 export HISTCONTROL=$HISTCONTROL:ignoredups
 # Set timestamps
-export HISTTIMEFORMAT='%F %T '
+export HISTTIMEFORMAT="%F %T"
 # Save to history after every command
 export PROMPT_COMMAND="$PROMPT_COMMAND;history -a;history -r"
 # A command per line in history file
 shopt -s cmdhist
 # Don't record specific commands
-export HISTIGNORE='ls:bg:fg:history'
+export HISTIGNORE="ls:bg:fg:history"
 # Append instead of overwrite
 shopt -s histappend
 
