@@ -46,7 +46,7 @@
     register: bashit_clone
 
   - name: Install bash-it
-    command: "bash $HOME/.bash_it/install.sh --silent -a -f"
+    command: "bash $HOME/.bash_it/install.sh --silent -f"
     when: bashit_clone.changed
 
   - name: Deploy custom theme
