@@ -45,7 +45,25 @@ export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
 {% endif %}
 {% endif %}
 
-#Make powerline padding better
+# History handling
+# Set history size
+export HISTSIZE=10000
+# Set history file size
+HISTFILESIZE=10000
+# Ignore duplicated commands
+export HISTCONTROL=$HISTCONTROL:ignoredups
+# Set timestamps
+export HISTTIMEFORMAT='%F %T '
+# Save to history after every command
+export PROMPT_COMMAND='history -a'
+# A command per line in history file
+shopt -s cmdhist
+# Don't record specific commands
+export HISTIGNORE='ls:bg:fg:history'
+# Append instead of overwrite
+shopt -s histappend
+
+# Make powerline padding better
 export POWERLINE_PADDING=0
 
 # Set vim as the default editor
