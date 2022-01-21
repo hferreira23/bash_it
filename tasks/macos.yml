@@ -47,7 +47,9 @@
 
   - name: Install bash-it
     command: "bash $HOME/.bash_it/install.sh --silent -f"
-    when: bashit_clone.changed
+    when:
+      - bashit_clone.changed or
+      - bashit_force_install
 
   - name: Deploy custom theme
     copy:

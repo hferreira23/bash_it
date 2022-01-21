@@ -1,4 +1,6 @@
 ---
+bashit_force_install: false
+
 bash_it_users:
   - 2xtreme
   - root
