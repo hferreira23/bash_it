@@ -98,6 +98,11 @@
         export THEME_CHECK_SUDO=false
         {% endif -%}
 
+        {% if outer_item == 'root' -%}
+        # Make sure only root user gets Red background prompt
+        export THEME_CHECK_SUDO=false
+        {% endif -%}
+
         #Import bash_personal
         [[ -f ~/.bash_personal ]] && . ~/.bash_personal
 
