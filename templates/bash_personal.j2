@@ -7,6 +7,7 @@ alias ls="ls --color -liash"
 alias grep="grep --color"
 alias fgrep="fgrep --color"
 alias egrep="egrep --color"
+alias bat="batcat0"
 
 {% if ssh_agent and outer_item != 'root' %}
 # SSH Agent
@@ -44,6 +45,10 @@ export ARA_API_CLIENT="http"
 export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
 {% endif %}
 {% endif %}
+# Bat settings
+export BAT_THEME="gruvbox-dark"
+
+export BAT_PAGER="delta"
 
 # History handling
 # Set history size
@@ -86,7 +91,7 @@ export LS_COLORS="tw=0:so=1;38;2;26;26;26;48;2;191;91;48:st=0:fi=0;38;2;131;148;
 export LSCOLORS=
 
 # PIP PATH
-export PATH=$PATH:/Users/ferreirah/Library/Python/3.9/bin
+export PATH=/opt/homebrew/bin:$PATH:/Users/ferreirah/Library/Python/3.10/bin
 
 # iTerm2 shell integration
 test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true

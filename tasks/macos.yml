@@ -9,6 +9,17 @@
       - bash-completion
       - bash
       - git
+      - bat
+      - bat-extras
+      - ripgrep
+      - sshpass
+      - fd
+      - ipcalc
+      - jq
+      - less
+      - telnet
+      - wget
+      - python@3.10
     state: latest
     update_homebrew: yes
   become: false
