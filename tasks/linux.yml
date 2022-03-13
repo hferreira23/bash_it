@@ -75,6 +75,7 @@
     mode: 0755
     owner: 'root'
     group: 'root'
+  when: outer_item == "root"
 
 - name: Bash_it config deploy block
   block:
