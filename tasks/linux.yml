@@ -22,6 +22,18 @@
   loop:
     - "https://api.github.com/repos/dandavison/delta/releases/latest"
     - "https://api.github.com/repos/sharkdp/bat/releases/latest"
+  when: outer_item == "root"
+  delegate_to: localhost
+
+- name: Install GH packages
+  apt:
+    deb: "{{ item }}"
+  loop: "{{ github_latest.results | json_query('[*].json.assets[*].browser_download_url') | flatten }}"
+  when:
+    - ansible_distribution == "Debian" or ansible_distribution == "Ubuntu" or ansible_distribution == "Pop!_OS"
+    - item is search(arch)
+    - item is not search("musl")
+    - outer_item == "root"
 
 - name: Install needed packages
   package:
@@ -29,16 +41,9 @@
       - git
       - fzf
       - bash-completion
+      - fd-find
     state: latest
   when: outer_item == "root"
-
-- name: Install GH packages
-  apt:
-    deb: "{{ item.browser_download_url }}"
-  loop: "{{ github_latest }}"
-  when:
-    - ansible_distribution == "Debian" or ansible_distribution = "Ubuntu"
-    - arch in item.browser_download_url
 
 - name: Add fzf keybindins
   file:
@@ -140,13 +145,13 @@
 
   - name: Enable bash-it completions
     shell:
-      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
+      cmd: "ALTERNATE_EDITOR=$(which vim) BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable completion terraform virsh pip3 pip system docker docker-compose git ssh"
     args:
       executable: /bin/bash
 
   - name: Enable bash-it plugins
     shell:
-      cmd: "BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
+      cmd: "ALTERNATE_EDITOR=$(which vim)  BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
     args:
       executable: /bin/bash
 
