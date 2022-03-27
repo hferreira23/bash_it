@@ -47,7 +47,6 @@
       - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
       - { src: 'bashrc.j2', dest: '$HOME/.bashrc'}
       - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
-      - { src: 'kitty.conf.j2', dest: '$HOME/.config/kitty.conf'}
 
   - name: Clone bash_it repo
     git:
@@ -72,9 +71,12 @@
 
   - name: Deploy custom theme
     copy:
-      src: "2xtreme"
-      dest: $HOME/.bash_it/custom/themes/
-      mode: '0750'
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: "{{ item.mode }}"
+    loop:
+      - { src: "2xtreme",dest: "$HOME/.bash_it/themes/2xtreme", mode: '0750'}
+      - { src: kitty.conf, dest: "$HOME/.config/kitty.conf", mode: '0640'}
 
   - name: Custom bashit configs
     replace:
