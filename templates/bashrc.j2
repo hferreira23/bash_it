@@ -1,4 +1,5 @@
 {# Only  gets imported in MacOS #}
+#!/usr/bin/env bash
 #Import bash_personal
 [[ -f ~/.bash_personal ]] && . ~/.bash_personal
 
@@ -9,8 +10,8 @@ alias fgrep="gfgrep --color"
 alias egrep="gegrep --color"
 alias gitclean="git pull && git fetch -p && git branch -vv | grep ': gone]'|  grep -v '\*' | awk '{ print $1; }' | xargs -r git branch -D"
 alias openstack="openstack --insecure"
-alias fd="fd --color"
+alias fd="fd --color always"
 
 # BEGIN_KITTY_SHELL_INTEGRATION
-if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
+#if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
 # END_KITTY_SHELL_INTEGRATION

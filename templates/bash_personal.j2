@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 {% if ansible_facts['distribution'] != "MacOSX" %}
 #Path PIP
 export PATH=$PATH:$HOME/.local/bin
@@ -8,7 +9,7 @@ alias grep="grep --color"
 alias fgrep="fgrep --color"
 alias egrep="egrep --color"
 alias bat="batcat"
-alias fd="fdfind --color"
+alias fd="fdfind --color always"
 
 {% if ssh_agent and outer_item != 'root' %}
 # SSH Agent
@@ -46,35 +47,133 @@ export ARA_API_CLIENT="http"
 export ARA_API_SERVER="http://ara.hmfamily.xyz:80"
 {% endif %}
 {% endif %}
+# Bash dir TAB autocomplete
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+
 # Bat settings
 export BAT_THEME="gruvbox-dark"
+export BAT_PAGER="less -RF --mouse"
 
-export BAT_PAGER="delta"
+# Set git pager
+export GIT_PAGER="delta"
 
 # History handling
 # Set history size
-export HISTSIZE=10000
+#export HISTSIZE=10000
 # Set history file size
-HISTFILESIZE=10000
+export HISTFILESIZE=50000
 # Ignore duplicated commands
-export HISTCONTROL=$HISTCONTROL:ignoredups
+export HISTCONTROL=ignoreboth:erasedups:autoshare
 # Set timestamps
-export HISTTIMEFORMAT="%F %T"
+export HISTTIMEFORMAT="%F %T "
 # Save to history after every command
-export PROMPT_COMMAND="$PROMPT_COMMAND;history -a;history -r"
+#export PROMPT_COMMAND="$PROMPT_COMMAND;history -c;history -r"
 # A command per line in history file
 shopt -s cmdhist
 # Don't record specific commands
 export HISTIGNORE="ls:bg:fg:history"
 # Append instead of overwrite
-shopt -s histappend
+#shopt -s histappend
+
+# script to delete repeated history lines
+history_cleanup () {
+  exec {history_lock}<"$HISTFILE"
+  flock $history_lock
+
+  # Temporary file for processing
+  histtmp=$( mktemp "${TMPDIR:-/tmp}/bash_history_merge.XXXXXXXXXX" )
+
+  # Break up history into NUL separate records
+  # This makes processing a LOT easier, especially with regards to handling
+  # multi-line history commands (such as quoted multi-line string args).
+  #
+  # This also defines the sources of the history being merged...
+  #
+  perl -pe '$_ = "\0$_" if /^#\d+/'  "$HISTFILE" <(history -w /dev/stdout) |
+
+  # Perl history merge..
+  #
+  # This perl sort, also preserves the order of lines with the same timestamp.
+  # While removing lines where the commands (even with different timestamps)
+  # are the same.
+  #
+  # It also optionally cleans out things I do not want saved in my history
+  # generally as they are ultra simplistic or cryptograpic commands.
+  #
+  perl -0 -e '
+    while(<>) {   # read it all into memory
+      s/\0//;                    # remove end of history entry marker
+      next unless length;
+      my ( $time, $command ) = split("\n",$_,2);
+      $time =~ s/^#(\d+).*/$1/g; # extract the timestamp (and nothing else)
+      $command =~ s/^\s+//;      # ignore spaces at start and end
+      $command =~ s/\s+$//;      # (not intervening lines (quoted indentation)
+                                 # Note commands may be multiple-lines!
+      next unless length($command); # blank command
+
+      # Optional Code  -- Remove specific commands from history
+      #
+      # Remove specific commands from history
+      #next if $command =~ /^#/;                             # comments
+      #
+      # Remove commands with these arguments
+      #next if $command =~ /\.(avi|mov|mp4|mpg|flv|rar)\b/;  # video file
+      #next if $command =~ /\/(mnt|nas)\//;                  # file mounts
+      #next if $command =~ /https?:\/\//;                   # URLs
+      #
+      # Special remote commands
+      #next if $command =~ /-----.SoD-----/;
+
+      # Optional Code  -- Remove Duplicate Commands
+      #
+      # Remove any Duplicate commands found (if timestamp is older)
+      # This is recommended when merging two or more history sources.
+      #
+      if ( $old = $time{$command} ) {
+        if ( $time >= $old ) {
+          # newer command has an older/equal duplicate - remove it
+          @{ $history{$old} } = grep { $_ ne $command } @{ $history{$old} }
+        } else {
+          # command is older than command already seen - ignore
+          next;
+        }
+      }
+
+      push @{ $history{$time} }, $command;  # push line into timestamp
+      $time{$command} = $time;              # where to find duplicate commands
+    }
+
+    # Output the merged history in timestamp, then command, order
+    foreach $time ( sort {$a<=>$b} keys %history ) {
+      foreach $command ( @{ $history{$time} } ) {
+        print "#$time\n";
+        print "$command\n";
+      }
+    }
+  '  > "$histtmp"
+
+  # Select one or both of the following actions...
+
+  # OPTIONAL: Replace current $HISTFILE with merged version
+  cp "$histtmp" "$HISTFILE"
+
+  # Explicitly release the lock
+  exec {history_lock}<&-
+
+  # Clean-up, shred file if posible
+  #rm -f "$histtmp"
+
+  unset histtmp
+}
 
 # Make powerline padding better
-export POWERLINE_PADDING=0
+#export POWERLINE_PADDING=0
 
 # Set vim as the default editor
 export VISUAL=$(which vim)
 export EDITOR=$(which vim)
+export ALTERNATE_EDITOR=$(which vim)
 
 # Zoxide
 eval "$(zoxide init --cmd cd bash)"
@@ -92,10 +191,10 @@ export LS_COLORS="tw=0:so=1;38;2;26;26;26;48;2;191;91;48:st=0:fi=0;38;2;131;148;
 export LSCOLORS=
 
 # PIP PATH
-export PATH=/opt/homebrew/bin:$PATH:/Users/ferreirah/Library/Python/3.10/bin
+export PATH=$PATH:/opt/homebrew/bin:/Users/ferreirah/Library/Python/3.10/bin
 
 # iTerm2 shell integration
-test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true
+#test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true
 
 # Bash completion
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
