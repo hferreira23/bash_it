@@ -19,7 +19,9 @@
       - less
       - telnet
       - wget
-      - python@3.10
+      - kitty
+      - thefuck
+      - tealdeer
     state: latest
     update_homebrew: yes
   become: false
@@ -45,6 +47,7 @@
       - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
       - { src: 'bashrc.j2', dest: '$HOME/.bashrc'}
       - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
+      - { src: 'kitty.conf.j2', dest: '$HOME/.config/kitty.conf'}
 
   - name: Clone bash_it repo
     git:
@@ -62,10 +65,15 @@
       - bashit_clone.changed or
         bashit_force_install
 
+  - name: Remove bash_it theme folder
+    file:
+      path: "$HOME/.bash_it/themes/2xtreme"
+      state: absent
+
   - name: Deploy custom theme
     copy:
       src: "2xtreme"
-      dest: $HOME/.bash_it/themes/
+      dest: $HOME/.bash_it/custom/themes/
       mode: '0750'
 
   - name: Custom bashit configs
@@ -103,7 +111,7 @@
 
   - name: Enable bash-it plugins
     shell:
-      cmd: "ALTERNATE_EDITOR=$(which vim) BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable plugin alias-completion base docker fzf git man sudo thefuck"
+      cmd: "ALTERNATE_EDITOR=$(which vim) BASH_IT=$HOME/.bash_it source $HOME/.bash_it/bash_it.sh && BASH_IT=$HOME/.bash_it bash-it enable plugin alias-completion base docker fzf git history history-search man sudo thefuck"
     args:
       executable: /bin/bash
 
