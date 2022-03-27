@@ -41,19 +41,19 @@ function __powerline_battery_prompt() {
   else
     if [[ "${battery_status_macos}" -le 15 ]]; then
       color="${BATTERY_STATUS_THEME_PROMPT_CRITICAL_COLOR}"
-			battery_char="${BATTERY_AC_CHAR_CRITICAL}"
+			battery_char="${BATTERY_CHAR_CRITICAL}"
     elif [[ "${battery_status_macos}" -le 35 ]]; then
       color="${BATTERY_STATUS_THEME_PROMPT_LOW_COLOR}"
-			battery_char="${BATTERY_AC_CHAR_LOW}"
+			battery_char="${BATTERY_CHAR_LOW}"
 		elif [[ "${battery_status_macos}" -le 80 ]]; then
 			color="${BATTERY_STATUS_THEME_PROMPT_MEDIUM_COLOR}"
-			battery_char="${BATTERY_AC_CHAR_MEDIUM}"
+			battery_char="${BATTERY_CHAR_MEDIUM}"
     else
       color="${BATTERY_STATUS_THEME_PROMPT_GOOD_COLOR}"
-			battery_char="${BATTERY_AC_CHAR_GOOD}"
+			battery_char="${BATTERY_CHAR_GOOD}"
     fi
-    if [[ -n ${battery_ac_macos} ]]; then
-      battery_char="${BATTERY_AC_CHAR}"
+    if [[ -z ${battery_ac_macos} ]]; then
+      battery_char="${BATTERY_CHAR_AC}"
     fi
 		battery_status_macos="${battery_char}${battery_status_macos}"
     echo "$(eval "echo ${battery_status_macos}")%|${color}"
