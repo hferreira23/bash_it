@@ -19,11 +19,11 @@
       - less
       - telnet
       - wget
-      - kitty
       - thefuck
       - tealdeer
-    state: latest
+    state: present
     update_homebrew: yes
+    update_all: yes
   become: false
   when: outer_item != 'root'
 
@@ -66,7 +66,7 @@
 
   - name: Remove bash_it theme folder
     file:
-      path: "$HOME/.bash_it/themes/2xtreme"
+      path: "$HOME/.bash_it/themes/2xtreme/"
       state: absent
 
   - name: Deploy custom theme
@@ -75,7 +75,7 @@
       dest: "{{ item.dest }}"
       mode: "{{ item.mode }}"
     loop:
-      - { src: "2xtreme",dest: "$HOME/.bash_it/themes/2xtreme", mode: '0750'}
+      - { src: "2xtreme",dest: "$HOME/.bash_it/custom/themes/", mode: '0750'}
       - { src: kitty.conf, dest: "$HOME/.config/kitty.conf", mode: '0640'}
 
   - name: Custom bashit configs

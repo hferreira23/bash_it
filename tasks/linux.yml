@@ -97,7 +97,7 @@
 
   - name: Remove bash_it theme folder
     file:
-      path: "$HOME/.bash_it/themes/2xtreme"
+      path: "$HOME/.bash_it/themes/2xtreme/"
       state: absent
 
   - name: Deploy custom theme
