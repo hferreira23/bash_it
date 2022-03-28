@@ -88,7 +88,7 @@
   - name: Fix brew path
     blockinfile:
       path: $HOME/.bash_profile
-      insertafter: '^#!'
+      insertafter: '^#!/usr/bin/env bash'
       block: |
 
         # Add brew to the PATH before doing anything else
