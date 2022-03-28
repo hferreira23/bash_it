@@ -6,6 +6,25 @@ bash_it_users:
   - root
 
 brew_user: hferreira
+brew_packages:
+  - zoxide
+  - coreutils
+  - grep
+  - fzf
+  - bash-completion
+  - bash
+  - git
+  - bat
+  - bat-extras
+  - ripgrep
+  - fd
+  - ipcalc
+  - jq
+  - less
+  - telnet
+  - wget
+  - thefuck
+  - tealdeer
 
 ansible_ara: false
 ssh_agent: false

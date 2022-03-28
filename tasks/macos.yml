@@ -1,38 +1,37 @@
 ---
 - name: Install required brew packages
   community.general.homebrew:
-    name:
-      - zoxide
-      - coreutils
-      - grep
-      - fzf
-      - bash-completion
-      - bash
-      - git
-      - bat
-      - bat-extras
-      - ripgrep
-      - fd
-      - ipcalc
-      - jq
-      - less
-      - telnet
-      - wget
-      - thefuck
-      - tealdeer
+    name: "{{ brew_packages }}"
     state: present
     update_homebrew: yes
     upgrade_all: yes
   become: false
   when: outer_item == brew_user
 
-- name: Install theme.sh
-  get_url:
-    url: "https://git.io/JM70M"
-    dest: /usr/bin/theme.sh
-    mode: 0755
-    owner: 'root'
-    group: 'admin'
+- name: ROOT only tasks
+  block:
+  - name: Fix bash_it loading
+    blockinfile:
+      path: /etc/bashrc
+      insertafter: EOF
+      block: |
+
+        # Forcing loading of the users bash_profile
+        source $HOME/.bash_profile
+
+  - name: Create /usr/local/bin
+    file:
+      path: /usr/local/bin
+      state: directory
+      mode: '0755'
+
+  - name: Install theme.sh
+    get_url:
+      url: "https://git.io/JM70M"
+      dest: /usr/bin/theme.sh
+      mode: 0755
+      owner: 'root'
+      group: 'admin'
   when: outer_item == 'root'
 
 - name: Bash_it config deploy block
