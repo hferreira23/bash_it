@@ -28,7 +28,7 @@
   - name: Install theme.sh
     get_url:
       url: "https://git.io/JM70M"
-      dest: /usr/bin/theme.sh
+      dest: /usr/local/bin/theme.sh
       mode: 0755
       owner: 'root'
       group: 'admin'
