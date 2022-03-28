@@ -1,50 +1,40 @@
 ---
-- name: Install required brew packages
-  community.general.homebrew:
-    name: "{{ brew_packages }}"
-    state: present
-    update_homebrew: yes
-    upgrade_all: yes
-  become: false
-  when: outer_item == brew_user
-
-- name: ROOT only tasks
-  block:
-  - name: Fix bash_it loading
-    blockinfile:
-      path: /etc/bashrc
-      insertafter: EOF
-      block: |
-
-        # Forcing loading of the users bash_profile
-        source $HOME/.bash_profile
-
-  - name: Create /usr/local/bin
-    file:
-      path: /usr/local/bin
-      state: directory
-      mode: '0755'
-
-  - name: Install theme.sh
-    get_url:
-      url: "https://git.io/JM70M"
-      dest: /usr/local/bin/theme.sh
-      mode: 0755
-      owner: 'root'
-      group: 'admin'
-  when: outer_item == 'root'
-
 - name: Bash_it config deploy block
   block:
-  - name: Deploy dot files
-    template:
-      src: "{{ item.src }}"
-      dest: "{{ item.dest }}"
-      mode: '0640'
-    loop:
-      - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
-      - { src: 'bashrc.j2', dest: '$HOME/.bashrc'}
-      - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
+  - name: Install required brew packages
+    community.general.homebrew:
+      name: "{{ brew_packages }}"
+      state: present
+      update_homebrew: yes
+      upgrade_all: yes
+    become: false
+    when: outer_item == brew_user
+
+  - name: ROOT only tasks
+    block:
+    - name: Fix bash_it loading
+      blockinfile:
+        path: /etc/bashrc
+        insertafter: EOF
+        block: |
+
+          # Forcing loading of the users bash_profile
+          source $HOME/.bash_profile
+
+    - name: Create /usr/local/bin
+      file:
+        path: /usr/local/bin
+        state: directory
+        mode: '0755'
+
+    - name: Install theme.sh
+      get_url:
+        url: "https://git.io/JM70M"
+        dest: /usr/local/bin/theme.sh
+        mode: 0755
+        owner: 'root'
+        group: 'admin'
+    when: outer_item == 'root'
 
   - name: Clone bash_it repo
     git:
@@ -67,6 +57,17 @@
       path: "$HOME/.bash_it/themes/2xtreme/"
       state: absent
 
+  - name: Deploy dot files
+    template:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      mode: '0640'
+    loop:
+      - { src: 'bashit_macos.j2', dest: '$HOME/.bash_profile'}
+      - { src: 'bash_personal.j2', dest: '$HOME/.bash_personal'}
+      - { src: 'bashrc.j2', dest: '$HOME/.bashrc'}
+      - { src: 'fzf.bash.j2', dest: '$HOME/.fzf.bash'}
+
   - name: Deploy custom theme and kitty config
     copy:
       src: "{{ item.src }}"
@@ -75,42 +76,6 @@
     loop:
       - { src: "2xtreme",dest: "$HOME/.bash_it/custom/themes/", mode: '0750'}
       - { src: kitty.conf, dest: "$HOME/.config/kitty/", mode: '0640'}
-
-  - name: Custom bashit configs
-    replace:
-      path: "{{ item.0 }}"
-      regexp: "{{ item.1.regexp }}"
-      replace: "{{ item.1.replace }}"
-    with_nested:
-      - "{{ bashit_config_files }}"
-      - "{{ bashit_settings }}"
-
-  - name: Fix brew path
-    blockinfile:
-      path: $HOME/.bash_profile
-      insertafter: '^#!/usr/bin/env bash'
-      block: |
-
-        # Add brew to the PATH before doing anything else
-        export PATH:$PATH:/opt/homebrew/bin/:/usr/local/bin
-
-  - name: Fix bash_it sudo prompt
-    blockinfile:
-      path: $HOME/.bash_profile
-      insertafter: EOF
-      block: |
-        {% if outer_item != 'root' -%}
-        # Make sure only root user gets Red background prompt
-        export THEME_CHECK_SUDO=false
-        {% endif -%}
-
-        {% if outer_item == 'root' -%}
-        # Make sure only root user gets Red background prompt
-        export THEME_CHECK_SUDO=true
-        {% endif -%}
-
-        #Import bash_rc
-        [[ -f ~/.bashrc ]] && . ~/.bashrc
 
   - name: Enable bash-it completions
     shell:

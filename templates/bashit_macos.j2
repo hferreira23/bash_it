@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# If not running interactively, don't do anything
+case $- in
+  *i*) ;;
+    *) return;;
+esac
+
+# Add brew to the PATH before doing anything else
+export PATH:$PATH:/opt/homebrew/bin/:/usr/local/bin/
+
+# Path to the bash it configuration
+export BASH_IT="/home/2xtreme/.bash_it"
+
+# Lock and Load a custom theme file.
+# Leave empty to disable theming.
+# location /.bash_it/themes/
+export BASH_IT_THEME='2xtreme'
+
+# Don't check mail when opening terminal.
+unset MAILCHECK
+
+# Set this to the command you use for todo.txt-cli
+export TODO="t"
+
+# Set this to false to turn off version control status checking within the prompt for all themes
+export SCM_CHECK=true
+
+# (Advanced): Uncomment this to make Bash-it reload itself automatically
+# after enabling or disabling aliases, plugins, and completions.
+export BASH_IT_AUTOMATIC_RELOAD_AFTER_CONFIG_CHANGE=1
+
+# Uncomment this to make Bash-it create alias reload.
+export BASH_IT_RELOAD_LEGACY=1
+
+# Load Bash It
+source "$BASH_IT"/bash_it.sh
+
+{% if outer_item != 'root' -%}
+# Make sure only root user gets Red background prompt
+export THEME_CHECK_SUDO=false
+{% else -%}
+# Make sure only root user gets Red background prompt
+export THEME_CHECK_SUDO=true
+{% endif -%}
+
+#Import bash_personal
+[[ -f ~/.bashrc ]] && . ~/.bashrc
