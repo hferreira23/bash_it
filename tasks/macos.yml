@@ -24,7 +24,7 @@
     update_homebrew: yes
     upgrade_all: yes
   become: false
-  when: outer_item != 'root'
+  when: outer_item == brew_user
 
 - name: Install theme.sh
   get_url:

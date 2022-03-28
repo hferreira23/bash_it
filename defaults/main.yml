@@ -5,6 +5,8 @@ bash_it_users:
   - 2xtreme
   - root
 
+brew_user: hferreira
+
 ansible_ara: false
 ssh_agent: false
 
