@@ -23,7 +23,7 @@
       - tealdeer
     state: present
     update_homebrew: yes
-    update_all: yes
+    upgrade_all: yes
   become: false
   when: outer_item != 'root'
 

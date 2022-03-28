@@ -3,3 +3,14 @@
 
 #Import bash_rc
 [[ -f ~/.bashrc ]] && . ~/.bashrc
+
+#Path PIP
+export PATH=$PATH:$HOME/.local/bin
+
+#Set alias for gnu tools
+alias ls="ls --color -liash"
+alias grep="grep --color"
+alias fgrep="fgrep --color"
+alias egrep="egrep --color"
+alias bat="batcat"
+alias fd="fdfind --color always"

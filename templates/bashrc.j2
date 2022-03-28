@@ -15,3 +15,23 @@ alias fd="fd --color always"
 # BEGIN_KITTY_SHELL_INTEGRATION
 #if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
 # END_KITTY_SHELL_INTEGRATION
+
+# Mac OS settings
+
+#LSCOLORS
+export LSCOLORS=
+
+# PIP PATH
+export PATH=$PATH:$(brew --prefix)/bin:$(brew --prefix)/opt/Python/3.10/bin
+
+# iTerm2 shell integration
+#test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true
+
+# Bash completion
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+
+#Pritunl ssh sockets
+function ssh-sockets {
+  ssh -D 10000 -C -N -f {{ proxy01 }}
+  ssh -J {{ proxy01 }} -D 10001 -C -N -f {{ proxy02 }}
+}
