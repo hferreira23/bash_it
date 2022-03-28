@@ -1,7 +1,5 @@
 {# Only  gets imported in MacOS #}
 #!/usr/bin/env bash
-#Import bash_personal
-[[ -f ~/.bash_personal ]] && . ~/.bash_personal
 
 #Set alias for gnu tools
 alias ls="gls --color -liash"
@@ -22,7 +20,7 @@ alias fd="fd --color always"
 export LSCOLORS=
 
 # PIP PATH
-export PATH=$PATH:/opt/homebrew/bin:$(brew --prefix)/Python/3.10/bin
+export PATH=$PATH:$(brew --prefix)/Python/3.10/bin
 
 # iTerm2 shell integration
 #test -e ~/.iterm2_shell_integration.bash && source ~/.iterm2_shell_integration.bash || true
@@ -35,3 +33,6 @@ function ssh-sockets {
   ssh -D 10000 -C -N -f {{ proxy01 }}
   ssh -J {{ proxy01 }} -D 10001 -C -N -f {{ proxy02 }}
 }
+
+#Import bash_personal
+[[ -f ~/.bash_personal ]] && . ~/.bash_personal

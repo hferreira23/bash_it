@@ -12,7 +12,6 @@
       - bat
       - bat-extras
       - ripgrep
-      - sshpass
       - fd
       - ipcalc
       - jq
@@ -30,11 +29,11 @@
 - name: Install theme.sh
   get_url:
     url: "https://git.io/JM70M"
-    dest: /usr/local/bin/theme.sh
+    dest: /usr/bin/theme.sh
     mode: 0755
     owner: 'root'
     group: 'admin'
-  when: outer_item != 'root'
+  when: outer_item == 'root'
 
 - name: Bash_it config deploy block
   block:
@@ -69,14 +68,14 @@
       path: "$HOME/.bash_it/themes/2xtreme/"
       state: absent
 
-  - name: Deploy custom theme
+  - name: Deploy custom theme and kitty config
     copy:
       src: "{{ item.src }}"
       dest: "{{ item.dest }}"
       mode: "{{ item.mode }}"
     loop:
       - { src: "2xtreme",dest: "$HOME/.bash_it/custom/themes/", mode: '0750'}
-      - { src: kitty.conf, dest: "$HOME/.config/kitty.conf", mode: '0640'}
+      - { src: kitty.conf, dest: "$HOME/.config/kitty/", mode: '0640'}
 
   - name: Custom bashit configs
     replace:
@@ -86,6 +85,14 @@
     with_nested:
       - "{{ bashit_config_files }}"
       - "{{ bashit_settings }}"
+
+  - name: Fix brew path
+    blockinfile:
+      path: $HOME/.bash_profile
+      insertafter: BOF
+      block: |
+        # Add brew to the PATH before doing anything else
+        export PATH:$PATH:/opt/homebrew/bin/:/usr/local/bin
 
   - name: Fix bash_it sudo prompt
     blockinfile:
