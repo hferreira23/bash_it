@@ -88,8 +88,9 @@
   - name: Fix brew path
     blockinfile:
       path: $HOME/.bash_profile
-      insertafter: BOF
+      insertafter: '^#!'
       block: |
+
         # Add brew to the PATH before doing anything else
         export PATH:$PATH:/opt/homebrew/bin/:/usr/local/bin
 
