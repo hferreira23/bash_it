@@ -54,7 +54,6 @@ alias fgrep="fgrep --color"
 alias egrep="egrep --color"
 {% if ansible_distribution == "Debian" or ansible_distribution == "Pop!_OS" -%}
 alias fd="fdfind --color always"
-alias bat="batcat"
 {% else -%}
 alias fd="fd --color always"
 {% endif -%}

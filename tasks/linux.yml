@@ -33,6 +33,7 @@
         loop: "{{ github_latest.results | json_query('[*].json.assets[*].browser_download_url') | flatten }}"
         when:
           - item is search(arch)
+          - item is search(".deb")
           - item is not search("musl")
 
       - name: Install needed packages
@@ -50,6 +51,11 @@
           cmd: curl -sS https://webinstall.dev/zoxide | bash
         args:
           executable: /bin/bash
+
+      - name: Install thefuck
+        pip:
+          name: thefuck
+          state: latest
   when:
     - ansible_distribution == "Debian" or ansible_distribution == "Pop!_OS"
     - outer_item == 'root'
