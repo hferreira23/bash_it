@@ -57,7 +57,7 @@
 - name: Install Arch packages
   command: yay -S ripgrep fd fzf tealdeer thefuck bat bat-extras zoxide git-delta ipcalc jq --noconfirm
   when:
-    - ansible_distribution == "Arch"
+    - ansible_distribution == "Archlinux"
     - outer_item != 'root'
 
 - name: Bash_it config deploy block
