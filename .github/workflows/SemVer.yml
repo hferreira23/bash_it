@@ -19,6 +19,6 @@ jobs:
           tag_prefix: ""
 
       - name: Release Ansible Role to Galaxy
-        uses: hspaans/ansible-galaxy-action@v1.0.2
+        uses: hspaans/ansible-galaxy-action@v1.0.3
         with:
           api_key: ${{ secrets.GALAXY_TOKEN }}
